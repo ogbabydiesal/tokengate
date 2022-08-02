@@ -160,33 +160,3 @@ if (typeof module === 'object' && module) {
 		RFFT: RFFT
 	};
 }
-
-var fft = new FFT(256); // Complex FFT
-var rfft = new RFFT(256); // Real FFT
-
-console.log(fft);
-class SpectralFilter extends AudioWorkletProcessor {
-  // When constructor() undefined, the default constructor will be
-  // implicitly used.
-  //let FFT = ssfft.FFT, RFFT = ssfft.RFFT;
-
-  process(inputs, outputs) {
-    // By default, the node has single input and output.
-    const input = inputs[0];
-    const output = outputs[0];
-
-    for (let channel = 0; channel < output.length; ++channel) {
-      const inputChannel = input[channel];
-      const outputChannel = output[channel];
-
-      for (let i = 0; i < inputChannel.length; ++i) {
-        outputChannel[i] = inputChannel[i] * .1;
-      }
-
-    }
-
-    return true;
-  }
-}
-
-registerProcessor('spectralfilter', SpectralFilter);

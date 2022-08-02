@@ -21,10 +21,12 @@ class SpectralFilter extends AudioWorkletProcessor {
       const inputChannel = input[channel];
       const outputChannel = output[channel];
       if (gain.length === 1) {
-        for (let i = 0; i < inputChannel.length; ++i)
-          //"squarify" the sin tone
+        for (let i = 0; i < inputChannel.length; ++i) {
           outputChannel[i] = clampNumber(inputChannel[i], -.5, .5) * gain[0];
-      } else {
+        }
+          //"squarify" the sin tone
+        }
+       else {
         for (let i = 0; i < inputChannel.length; ++i)
           outputChannel[i] = inputChannel[i] * gain[i];
       }
