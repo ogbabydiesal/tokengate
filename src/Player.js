@@ -1,6 +1,4 @@
 import React from 'react';
-let ssfft = require('signalsmith-js-fft');
-let FFT = ssfft.FFT, RFFT = ssfft.RFFT;
 class Player extends React.Component {
 
   constructor(props) {
