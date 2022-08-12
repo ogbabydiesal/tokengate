@@ -8,8 +8,7 @@ function updateFilter(slidey){
 
 async function processSomeStuff(){
   context = new AudioContext();
-
-  const audio = new Audio("./sounds/overhere.wav");
+  //const audio = new Audio("./sounds/overhere.wav");
   /*
   const oscillator = new OscillatorNode(context);
   oscillator.frequency.value = 450;
