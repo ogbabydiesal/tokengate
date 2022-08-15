@@ -1,24 +1,32 @@
 import React from 'react';
-<script src = "https://mimicproject.com/libs/maximilian.v.0.1.js"></script>
+
 
 class Player extends React.Component {
-  audio() {
-    /*let maxi;
-    initAudioEngine().then((dspEngine)=>{
-      maxi = dspEngine;
-      setup();
-      //Get audio code from script element
-      maxi.setAudioCode("myAudioScript");
 
-    })
-    */
+  constructor(props) {
+        super(props);
+    }
+
+
+  audio() {
+    async function processSomeStuff() {
+      const context = new AudioContext();
+      const oscillator = new OscillatorNode(context);
+      oscillator.frequency.value = 450;
+      oscillator.frequency.amplitude = .1;
+      await context.audioWorklet.addModule('worklet/spc.js')
+      const spectralNode = new window.AudioWorkletNode(context, 'spectralsynth');
+      oscillator.connect(spectralNode).connect(context.destination);
+      oscillator.start();
+    }
+    processSomeStuff();
   }
 
   render() {
     return (
-      <div><button onClick={() => this.audio()}>play</button>
+      <div>
+        <button onClick={() => this.audio()}>start context</button>
       </div>
-
     );
   }
 }

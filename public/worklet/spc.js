@@ -158,6 +158,16 @@ function RFFT(size) {
 		complexFft.ifft(complexBuffer, output);
 	};
 }
+
+function bufferFiller (block, bufferSize, inputCircBuffer, pointers) {
+	//copy 1 block of audio into input-circular-buffer, at the input pointer, and make sure to wrap
+	for (let i = 0; i < bufferSize; i++) {
+		inputCircBuffer[(pointers[0] + i) % inputCircBuffer.length] = block[i];
+	}
+	//increment the pointer by 1 block size
+	pointers[0] = (pointers[0] + bufferSize) % inputCircBuffer.length;
+}
+
 if (typeof module === 'object' && module) {
 	module.exports = {
 		FFT: FFT,
@@ -172,20 +182,21 @@ class SpectralSynth extends AudioWorkletProcessor {
 		//declare circular buffer
 		this.inputCircBuffer = new Array(1024).fill(0);
 		this.outputCircBuffer = new Array(1024).fill(0);
-		this.pointers = [256,0];
+		this.pointers = [256,0, 0];
 
 		//declare fft stuff
-		this.fftSize = 128;
+		this.fftSize = 256;
 		this.fft = new RFFT(this.fftSize); // Complex FFT
 		this.hopSize = this.fftSize / 2;
 		this.hopCounter = 0;
 		this.arrayFiller = new Array(256).fill(0);
+		this.windowedChunk = new Array(this.fftSize).fill(0);
 		//our spectral data from our NFT
 		this.nftData = [-0.680157, -2.595802, -2.23181, 1.043628, 0.871478, 0.032085, 0.011783, -0.160232, -0.184497, -0.109513, -0.087528, -0.075393, 0.184206, 0.174413, 0.029763, -0.027556, -0.045465, -0.021071, 0.004307, 0.0381, 0.040553, 0.012664, 0.035117, -0.012051, -0.019118, 0.004216, 0.018444, 0.015699, 0.00379, -0.004722, -0.000858, -0.017687, -0.026178, 0.011752, 0.019912, 0.013626, 0.00343, -0.046204, -0.047157, -0.009494, 0.007517, 0.001061, 0.001682, -0.001973, 0.00136, -0.000763, -0.008926, 0.001992, 0.008029, -0.006005, -0.000749, 0.001227, 0.000536, -0.000417, 0.001444, 0.000586, -0.00084, 0.00056, 0.002605, 0.000054, 0.000127, 0.001656, 0.00143, -0.00008, -0.004751, -0.004541, 0.000775, 0.000517, 0.001907, 0.000662, 0.000421, -0.000034, 0.001203, -0.000295, -0.000875, -0.000185, 0.001125, 0.00154, 0.000368, -0.000635, 0.001205, 0.000953, 0.000298, -0.00007, 0.000814, 0.000101, -0.000163, 0.000154, 0.000806, -0.000091, 0.00047, 0.000528, 0.000385, 0.000568, -0.000065, -0.002443, -0.000881, 0.000015, 0.000921, 0.00154, 0.000318, -0.000622, 0.000688, -0.000106, -0.000524, -0.000082, 0.000407, -0.000157, -0.000026, 0.000186, 0.000851, -0.001358, -0.001375, -0.001035, -0.00129, -0.00054, -0.000292, -0.000539, 0.000184, -0.000136, 0.000128, -0.000125, 0.000123, -0.000122, 0.000121, -0.00012, 0.00012, -0.00012];
 
 		for (let i = 0; i < this.fftSize; i ++) {
 		  //this.nftData[i] = (((Math.random()) * 2) - 1) * .4;
-		  this.nftData[i] = parseFloat(this.nftData[i].toFixed(2));
+		  //this.nftData[i] = parseFloat(this.nftData[i].toFixed(2));
 		  //console.log(rPhase[i]);
 		}
 
@@ -206,7 +217,7 @@ class SpectralSynth extends AudioWorkletProcessor {
 		//fill the other half with zeros
 		//this.spectrum = this.spectrum.concat(this.arrayFiller);
 		//worklets' precious buffersize
-		this.buffersize = 128;
+		this.bufferSize = 128;
 		this.fftResult = new  Float64Array(this.fftSize) ;
 		//window function
 		function hanning (i, N) {
@@ -217,14 +228,7 @@ class SpectralSynth extends AudioWorkletProcessor {
 		for (let y = 0; y < this.fftSize; y++) {
 			this.hann[y] = hanning(y,this.fftSize);
 		}
-		function bufferFiller (block) {
-			//copy 1 block of audio into input-circular-buffer, at the input pointer, and make sure to wrap
-			for (let i = 0; i < this.buffersize; i++) {
-				this.inputCircBuffer[(this.pointer[0] + i) % this.inputCircBuffer.length] = block[i];
-			}
-			//increment the pointer by 1 block size
-			this.pointer[0] = (this.pointer[0] + this.bufferSize) % this.inputCircBuffer.length;
-		}
+
 
 	}
 	//this happens every block
@@ -237,12 +241,49 @@ class SpectralSynth extends AudioWorkletProcessor {
     const inputChannel = input[0];
     const outputChannel = output[0];
 
-		bufferFiller(inputChannel);
+		//INPUT
+		//write a block of audio into an input-buffer
+		for (let i = 0; i < this.bufferSize; i++) {
+			this.inputCircBuffer[(this.pointers[0] + i) % this.inputCircBuffer.length] = inputChannel[i];
+			//keep track of when a Hop Size elapses
+			this.hopCounter++
+			//Do Spectral Processing when a Hop Size elapses
+			if (this.hopCounter == this.hopSize) {
+				//reset our Hop Counter
+				this.hopCounter = 0;
+				//(block, bufferSize, inputCircBuffer, pointers)
+				bufferFiller(inputChannel, this.bufferSize, this.inputCircBuffer, this.pointers);
+				//Window the last FFT Size of samples
+				for (let y = 0; y < this.fftSize; y++) {
+					//console.log(this.windowedChunk);
+					//this.windowedChunk[y] = this.inputCircBuffer[this.pointers[0] + i + this.inputCircBuffer.length - this.fftSize  % this.inputCircBuffer.length] ;
+					this.windowedChunk[y] = this.inputCircBuffer[(((this.pointers[0] + i) + this.inputCircBuffer.length) - this.fftSize + y) % this.inputCircBuffer.length] * this.hann[y];
+				}
+				this.fft.fft(this.windowedChunk, this.fftResult);
+				//do some spectral stuff here
+				//we'll reuse the windowed chunk array to store the real samples from the inverse fft
+				this.fft.ifft(this.fftResult, this.windowedChunk);
+				//write (make sure we are ADDIING) our Real sample values into the output Circular Buffer
+				for (let y = 0; y < this.fftSize; y++) {
+					this.outputCircBuffer[(this.pointers[1] + y) % this.outputCircBuffer.length] = this.outputCircBuffer[(this.pointers[1] + y) % this.outputCircBuffer.length] + this.windowedChunk[y];
+				}
+				//increment our output circular buffer write pointer 1 hop Size
+				this.pointers[1] =  (this.pointers[1] + this.hopSize) % this.outputCircBuffer.length
+			}
+		}
+		//increment the input circular buffer pointer by 1 block size
+		this.pointers[0] = (this.pointers[0] + this.bufferSize) % this.inputCircBuffer.length;
+
+		//OUTPUT
 		//write samples to output buffer from the past
 		for (let x = 0; x < this.bufferSize; x++) {
-			outputChannel[x] = this.inputCircBuffer[(this.pointers[1] + x) % this.inputCircBuffer.length]
+			outputChannel[x] = this.outputCircBuffer[(this.pointers[2] + x) % this.outputCircBuffer.length]
+			this.outputCircBuffer[(this.pointers[2] + x) % this.outputCircBuffer.length] = 0;
 		}
-		console.log('hello');
+		this.pointers[2] = (this.pointers[2] + this.bufferSize) % this.outputCircBuffer.length;
+
+		//console.log(this.windowedChunk);
+
     return true;
   }
 }
