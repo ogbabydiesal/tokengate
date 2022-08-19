@@ -1,23 +1,42 @@
-# Getting Started with Create React App
+# Sound-chain
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## About
 
-## Available Scripts
+Sound Chain is collaborative spectral composition developed using Web3 tech. It uses the NFT standard
+to grant permissions for the composing process.
 
+Collectors of FFNFTs (Fast Fourier Non-Fungible Tokens) are given write access to unique components of the audio spectrogram. There are 256,000 FFNFTs in total.
+
+The Sound Chain website can synthesize the blockchain data using our built in spectral
+playback engine.
+
+Each FFNFT gives the owner access to a particular frequency component in time. If I collect FFNT 10, then I would have write access to (find the frequency) in the first frame of audio for the sound piece. If I collect FFNFT 256, then I would have write access to (find the frequency) in the second frame of audio.
+
+Frames can be played back (and looped) arbitrarily fast so the piece can be expanded or compressed to explore new timbres.
+
+Due to the psychoacoustic effect of ___ not all FFNFTs are as audible as their vertical neighbors. A general curve is chosen to illustrate which FFNTs are more valuable due to this effect.
+
+## The Audio Engine
+
+Spectral processing is achieved in our app using Audioworklets and more generally the Webaudio API. We have chosen an FFT size of 256 with an overlap factor of 2. Should the website go down, the composition remains available on the blockchain. Due to the fairly straightforward resynthesis technique we have chosen, the sound piece can be resynthesized in any digital signal processing software with FFT/IFFT functions such as JUCE or MAX/MSP.
+
+We are using the [signalsmith-js-fft](https://www.npmjs.com/package/signalsmith-js-fft) node package to handle the fft/ifft processing. It is provided using an MIT license.
+
+For more information on the overlap-add fft/ifft synthesis and resynthesis technique see [the bela online tutorials](https://learn.bela.io/tutorials/c-plus-plus-for-real-time-audio-programming/phase-vocoder-part-1/).
+
+## Installation
 In the project directory, you can run:
+### `yarn install`
 
-### `npm start`
+To start the app you can run:
 
-Runs the app in the development mode.\
+### `yarn start`
+
+Which runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
 
@@ -28,43 +47,3 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
