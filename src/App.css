@@ -1,21 +1,23 @@
 .App {
   text-align: center;
+  background-color:PaleGoldenRod;
+
 }
 
 .metaConnect {
   position:absolute;
   right:0px;
   top: 0px;
-  width: 15vw;
-  display:flex;
-  border-radius: 25px;
-  margin:15px;
+  width: 25vw;
+  border-radius: 35px;
+  margin:35px;
   border-style: solid;
   border-color:royalblue;
   color:royalblue;
-  background-color: white;
+  background-color:PaleGoldenRod;
   font-size: 30px;
-
+  align-items: center;
+  box-shadow: 10px;
 }
 
 .App-logo {
@@ -34,12 +36,15 @@
   border-color:black;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: top;
-  font-size: calc(10px + 2vmin);
-  color: black;
-  width: 25vw;
+  font-size: calc(5px + 2vmin);
+  width: 35vw;
+  color:royalblue;
+  margin-right: 55px;
+  border-color: royalblue;
+
 }
 
 .App-link {
