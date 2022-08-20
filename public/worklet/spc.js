@@ -1,7 +1,5 @@
 // A fairly small and neat FFT - not the fastest, but not terrible
 // Expects interleaved complex pairs (i.e. `[real0, imag0, real1, imag1, ...]`)
-
-
 function FFT(size) {
 	if (!(this instanceof FFT)) return new FFT(size);
 
@@ -119,7 +117,6 @@ function RFFT(size) {
 		output[1] = complexBuffer[0] - complexBuffer[1];
 		for (var i = 1; i <= qSize; ++i) {
 			var conjI = hSize - i;
-
 			var oddR = (complexBuffer[2*i] + complexBuffer[2*conjI])*0.5;
 			var oddI = (complexBuffer[2*i + 1] - complexBuffer[2*conjI + 1])*0.5;
 			var iEvenR = (complexBuffer[2*i] - complexBuffer[2*conjI])*0.5;
@@ -127,7 +124,6 @@ function RFFT(size) {
 			var twiddleR = twiddles[2*i], twiddleI = twiddles[2*i + 1];
 			var rotR = iEvenR*twiddleR - iEvenI*twiddleI;
 			var rotI = iEvenR*twiddleI + iEvenI*twiddleR;
-
 			output[2*i] = oddR + rotR;
 			output[2*i + 1] = oddI + rotI;
 			output[2*conjI] = oddR - rotR;
@@ -139,7 +135,6 @@ function RFFT(size) {
 		complexBuffer[1] = input[0] - input[1];
 		for (var i = 1; i <= qSize; ++i) {
 			var conjI = hSize - i;
-
 			var oddR = input[2*i] + input[2*conjI];
 			var oddI = input[2*i + 1] - input[2*conjI + 1];
 			var iEvenR = input[2*i] - input[2*conjI];
@@ -147,7 +142,6 @@ function RFFT(size) {
 			var twiddleR = twiddles[2*i], twiddleI = twiddles[2*i + 1];
 			var rotR = iEvenR*twiddleR + iEvenI*twiddleI;
 			var rotI = iEvenI*twiddleR - iEvenR*twiddleI;
-
 			complexBuffer[2*i] = oddR + rotR;
 			complexBuffer[2*i + 1] = oddI + rotI;
 			complexBuffer[2*conjI] = oddR - rotR;
@@ -175,6 +169,10 @@ if (typeof module === 'object' && module) {
 
 
 class SpectralSynth extends AudioWorkletProcessor {
+	// Custom AudioParams can be defined with this static getter.
+  static get parameterDescriptors() {
+    return [{ name: 'gain', defaultValue: .3, minValue:0, maxValue:1}];
+  }
 	constructor() {
     super()
 		//declare circular buffer
@@ -183,7 +181,7 @@ class SpectralSynth extends AudioWorkletProcessor {
 		this.pointers = [256,0, 0];
 
 		//declare fft stuff
-		this.fftSize = 256;
+		this.fftSize = 128;
 		this.fft = new RFFT(this.fftSize); // Complex FFT
 		this.hopSize = this.fftSize / 2;
 		this.hopCounter = 0;
@@ -225,12 +223,13 @@ class SpectralSynth extends AudioWorkletProcessor {
 		}
 	}
 	//this happens every block
-  process(inputs, outputs) {
+  process(inputs, outputs, parameters) {
     // By default, the node has single input and output.
     const input = inputs[0];
     const output = outputs[0];
     const inputChannel = input[0];
     const outputChannel = output[0];
+		let gain = parameters.gain[0];
 		//INPUT
 		//write a block of audio into an input-buffer
 		for (let i = 0; i < this.bufferSize; i++) {
@@ -245,11 +244,11 @@ class SpectralSynth extends AudioWorkletProcessor {
 				for (let y = 0; y < this.fftSize; y++) {
 					this.windowedChunk[y] = this.inputCircBuffer[(((this.pointers[0] + i) + this.inputCircBuffer.length) - this.fftSize + y) % this.inputCircBuffer.length] * this.hann[y];
 				}
-				compute the fft
+				//compute the fft
 				this.fft.fft(this.windowedChunk, this.fftResult);
 				//do some spectral stuff here
 				for (let z = 0; z < this.fftSize; z++) {
-					this.fftResult[z] = this.fftResult[z] / this.fftSize;
+					this.fftResult[z] = (this.fftResult[z] / this.fftSize) * gain;
 				}
 				//we'll reuse the windowed chunk array to store the real samples from the inverse fft
 				this.fft.ifft(this.fftResult, this.windowedChunk);
@@ -258,7 +257,7 @@ class SpectralSynth extends AudioWorkletProcessor {
 					this.outputCircBuffer[(this.pointers[1] + y) % this.outputCircBuffer.length] = this.outputCircBuffer[(this.pointers[1] + y) % this.outputCircBuffer.length] + this.windowedChunk[y];
 				}
 				//increment our output circular buffer write pointer 1 hop Size
-				this.pointers[1] =  (this.pointers[1] + this.hopSize) % this.outputCircBuffer.length
+				this.pointers[1] =  (this.pointers[1] + this.hopSize) % this.outputCircBuffer.length;
 			}
 		}
 		//increment the input circular buffer pointer by 1 block size

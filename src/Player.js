@@ -1,31 +1,35 @@
 import React from 'react';
 
-
 class Player extends React.Component {
-
   constructor(props) {
         super(props);
+        this.state = {};
     }
 
+  async audio() {
+    const context = new AudioContext();
+    const oscillator = new OscillatorNode(context);
+    oscillator.frequency.value = 450;
+    oscillator.frequency.amplitude = .1;
+    await context.audioWorklet.addModule('worklet/spc.js')
+    const spectralNode = new window.AudioWorkletNode(context, 'spectralsynth');
+    oscillator.connect(spectralNode).connect(context.destination);
+    oscillator.start();
+    let gainParam = spectralNode.parameters.get('gain');
+    this.setState({gainParam, context});
+    return
+  }
 
-  audio() {
-    async function processSomeStuff() {
-      const context = new AudioContext();
-      const oscillator = new OscillatorNode(context);
-      oscillator.frequency.value = 450;
-      oscillator.frequency.amplitude = .1;
-      await context.audioWorklet.addModule('worklet/spc.js')
-      const spectralNode = new window.AudioWorkletNode(context, 'spectralsynth');
-      oscillator.connect(spectralNode).connect(context.destination);
-      oscillator.start();
-    }
-    processSomeStuff();
+  updateSpectralEngine(val) {
+    this.state.gainParam.setValueAtTime(0, this.state.context.currentTime);
+    this.state.gainParam.linearRampToValueAtTime(val, this.state.context.currentTime + 0.5);
   }
 
   render() {
     return (
       <div>
         <button onClick={() => this.audio()}>start context</button>
+        <input id="typeinp" type="range" min="0" max="1" defaultValue=".5" step=".01" onChange={(e) => this.updateSpectralEngine(e.target.value)}/>
       </div>
     );
   }
