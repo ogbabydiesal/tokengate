@@ -229,7 +229,7 @@ class SpectralSynth extends AudioWorkletProcessor {
     const output = outputs[0];
     const inputChannel = input[0];
     const outputChannel = output[0];
-		let gain = parameters.gain[0];
+		let gain = parameters.gain;
 		//INPUT
 		//write a block of audio into an input-buffer
 		for (let i = 0; i < this.bufferSize; i++) {
@@ -248,7 +248,7 @@ class SpectralSynth extends AudioWorkletProcessor {
 				this.fft.fft(this.windowedChunk, this.fftResult);
 				//do some spectral stuff here
 				for (let z = 0; z < this.fftSize; z++) {
-					this.fftResult[z] = (this.fftResult[z] / this.fftSize) * gain;
+					this.fftResult[z] = (this.fftResult[z] / this.fftSize);
 				}
 				//we'll reuse the windowed chunk array to store the real samples from the inverse fft
 				this.fft.ifft(this.fftResult, this.windowedChunk);
@@ -263,9 +263,10 @@ class SpectralSynth extends AudioWorkletProcessor {
 		//increment the input circular buffer pointer by 1 block size
 		this.pointers[0] = (this.pointers[0] + this.bufferSize) % this.inputCircBuffer.length;
 		//OUTPUT TO SOUNDCARD ;)
-		//write samples to output buffer from the past
+		//write samples to output buffer from the past and multiply by gain parameter
 		for (let x = 0; x < this.bufferSize; x++) {
-			outputChannel[x] = this.outputCircBuffer[(this.pointers[2] + x) % this.outputCircBuffer.length]
+			outputChannel[x] = this.outputCircBuffer[(this.pointers[2] + x) % this.outputCircBuffer.length] * gain[0];
+			//clear samples when we're done reading them out to DAC
 			this.outputCircBuffer[(this.pointers[2] + x) % this.outputCircBuffer.length] = 0;
 		}
 		this.pointers[2] = (this.pointers[2] + this.bufferSize) % this.outputCircBuffer.length;

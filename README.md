@@ -5,7 +5,7 @@
 Sound Chain is collaborative spectral composition developed using Web3 tech. It uses the NFT standard
 to grant permissions for the composing process.
 
-Collectors of FFNFTs (Fast Fourier Non-Fungible Tokens) are given write access to unique components of the audio spectrogram. There are 256,000 FFNFTs in total.
+Collectors of FFNFTs (Fast Fourier Non-Fungible Tokens) are given write access to unique components of the audio spectrogram. There are 12,800 FFNFTs in total.
 
 The Sound Chain website can synthesize the blockchain data using our built in spectral
 playback engine.

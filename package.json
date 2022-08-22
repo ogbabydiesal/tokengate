@@ -11,6 +11,8 @@
     "helmet": "^5.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-native-canvas": "^0.1.38",
+    "react-native-webview": "^11.23.0",
     "react-script-tag": "^1.1.2",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"

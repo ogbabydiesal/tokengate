@@ -27,8 +27,8 @@ class Player extends React.Component {
 
   render() {
     return (
-      <div>
-        <button onClick={() => this.audio()}>start context</button>
+      <div className = "audioParams">
+        <button className = "audioButtonStyle" onClick={() => this.audio()}>start audio</button>
         <input id="typeinp" type="range" min="0" max="1" defaultValue=".5" step=".01" onChange={(e) => this.updateSpectralEngine(e.target.value)}/>
       </div>
     );

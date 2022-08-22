@@ -5,6 +5,8 @@ import './App.css';
 import App from './App';
 import Metamask from './Metamask';
 import Player from './Player';
+import Drawer from './Drawer';
+
 import reportWebVitals from './reportWebVitals';
 
 
@@ -14,6 +16,7 @@ root.render(
     <App />
     <Metamask />
     <Player />
+    <Drawer />
   </React.StrictMode>
 );
 
