@@ -20,7 +20,7 @@
   box-shadow: 10px;
 }
 
-.canvasConnect {
+.canvasSpectrum {
   position:absolute;
   right:0px;
   top: 25vh;
@@ -30,6 +30,18 @@
   border-style: solid;
   border-color:royalblue;
   background-color: Gainsboro;
+}
+
+.canvasOverlay {
+  position:absolute;
+  right:0px;
+  top: 25vh;
+  width: 256px;
+  height: 256px;
+  margin:35px;
+  border-style: solid;
+  border-color:royalblue;
+
 }
 
 .audioParams {

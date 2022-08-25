@@ -250,6 +250,7 @@ class SpectralSynth extends AudioWorkletProcessor {
 				for (let z = 0; z < this.fftSize; z++) {
 					this.fftResult[z] = (this.fftResult[z] / this.fftSize);
 				}
+				//console.log(this.windowedChunk.length);
 				//we'll reuse the windowed chunk array to store the real samples from the inverse fft
 				this.fft.ifft(this.fftResult, this.windowedChunk);
 				//write (make sure we are ADDIING) our Real sample values into the output Circular Buffer
