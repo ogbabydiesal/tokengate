@@ -167,19 +167,21 @@ if (typeof module === 'object' && module) {
 	};
 }
 
-
 class SpectralSynth extends AudioWorkletProcessor {
 	// Custom AudioParams can be defined with this static getter.
   static get parameterDescriptors() {
-    return [{ name: 'gain', defaultValue: .3, minValue:0, maxValue:1}];
+    return [
+			{name: 'gain', defaultValue: .3, minValue:0, maxValue:1},
+			{name: 'spec', automationRate: "a-rate"}
+	];
   }
 	constructor() {
     super()
+
 		//declare circular buffer
 		this.inputCircBuffer = new Array(1024).fill(0);
 		this.outputCircBuffer = new Array(1024).fill(0);
 		this.pointers = [256,0, 0];
-
 		//declare fft stuff
 		this.fftSize = 128;
 		this.fft = new RFFT(this.fftSize); // Complex FFT
@@ -211,7 +213,7 @@ class SpectralSynth extends AudioWorkletProcessor {
 		//this.spectrum = this.spectrum.concat(this.arrayFiller);
 		//worklets' precious buffersize
 		this.bufferSize = 128;
-		this.fftResult = new  Float64Array(this.fftSize) ;
+		this.fftResult = new Float64Array(this.fftSize) ;
 		//window function
 		function hanning (i, N) {
 			return 0.5*(1 - Math.cos(6.283185307179586*i/(N-1)))
@@ -225,11 +227,18 @@ class SpectralSynth extends AudioWorkletProcessor {
 	//this happens every block
   process(inputs, outputs, parameters) {
     // By default, the node has single input and output.
-    const input = inputs[0];
+
+		const input = inputs[0];
     const output = outputs[0];
     const inputChannel = input[0];
     const outputChannel = output[0];
 		let gain = parameters.gain;
+		let specy = this.port.onmessage = (e) => {
+      return e.data;
+
+    }
+
+		console.log(specy);
 		//INPUT
 		//write a block of audio into an input-buffer
 		for (let i = 0; i < this.bufferSize; i++) {
