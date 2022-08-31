@@ -17,20 +17,20 @@ class Player extends React.Component {
     oscillator.start();
     let gainParam = spectralNode.parameters.get('gain');
     let specParam = spectralNode.parameters.get('spec');
-    spectralNode.port.postMessage(this.props.specFrame);
-    this.setState({gainParam, context, specParam, spectralNode});
+    //spectralNode.port.postMessage(this.props.specFrame);
+    this.setState({gainParam, context,spectralNode});
     return
   }
-  //this.props.specFrame
+
   updateSpectralEngine(val) {
-    //this.state.gainParam.setValueAtTime(0, this.state.context.currentTime);
     this.state.gainParam.linearRampToValueAtTime(val, this.state.context.currentTime + 0.5);
-    //this.state.specParam.linearRampToValueAtTime(this.props.specFrame, this.state.context.currentTime + 0.5);
   }
 
   render() {
-
-    //console.log(this.props.specFrame.length);
+    try {
+      this.state.spectralNode.port.postMessage(this.props.specFrame);
+    }
+    catch(error) {}
     return (
       <div className = "audioParams">
         <button className = "audioButtonStyle" onClick={() => this.audio()}>start audio</button>

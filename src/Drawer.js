@@ -16,7 +16,8 @@ export default function App() {
     let spectrum = new Array(fftSize * 50).fill(0); //6400
     //generate random values for our spectrum
     for (let i = 0; i < spectrum.length; i++) {
-      if (Math.random() < .01) {
+
+      if (Math.random() < .1) {
         spectrum[i] = Math.random().toFixed(3);
       }
     }
