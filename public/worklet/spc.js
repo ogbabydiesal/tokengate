@@ -167,51 +167,35 @@ if (typeof module === 'object' && module) {
 	};
 }
 
-
 class SpectralSynth extends AudioWorkletProcessor {
 	// Custom AudioParams can be defined with this static getter.
   static get parameterDescriptors() {
-    return [{ name: 'gain', defaultValue: .3, minValue:0, maxValue:1}];
+    return [
+			{name: 'gain', defaultValue: .3, minValue:0, maxValue:1},
+			{name: 'spec', automationRate: "a-rate"}
+	];
   }
 	constructor() {
     super()
+		this.specy;
+		this.port.onmessage = (e) => {
+      this.specy = e.data;
+    }
 		//declare circular buffer
 		this.inputCircBuffer = new Array(1024).fill(0);
 		this.outputCircBuffer = new Array(1024).fill(0);
 		this.pointers = [256,0, 0];
-
 		//declare fft stuff
 		this.fftSize = 128;
-		this.fft = new RFFT(this.fftSize); // Complex FFT
+		this.fft = new FFT(this.fftSize); // Complex FFT
 		this.hopSize = this.fftSize / 2;
 		this.hopCounter = 0;
-		this.arrayFiller = new Array(256).fill(0);
-		this.windowedChunk = new Array(this.fftSize).fill(0);
-		//our spectral data from our NFT
-		this.nftData = [-0.680157, -2.595802, -2.23181, 1.043628, 0.871478, 0.032085, 0.011783, -0.160232, -0.184497, -0.109513, -0.087528, -0.075393, 0.184206, 0.174413, 0.029763, -0.027556, -0.045465, -0.021071, 0.004307, 0.0381, 0.040553, 0.012664, 0.035117, -0.012051, -0.019118, 0.004216, 0.018444, 0.015699, 0.00379, -0.004722, -0.000858, -0.017687, -0.026178, 0.011752, 0.019912, 0.013626, 0.00343, -0.046204, -0.047157, -0.009494, 0.007517, 0.001061, 0.001682, -0.001973, 0.00136, -0.000763, -0.008926, 0.001992, 0.008029, -0.006005, -0.000749, 0.001227, 0.000536, -0.000417, 0.001444, 0.000586, -0.00084, 0.00056, 0.002605, 0.000054, 0.000127, 0.001656, 0.00143, -0.00008, -0.004751, -0.004541, 0.000775, 0.000517, 0.001907, 0.000662, 0.000421, -0.000034, 0.001203, -0.000295, -0.000875, -0.000185, 0.001125, 0.00154, 0.000368, -0.000635, 0.001205, 0.000953, 0.000298, -0.00007, 0.000814, 0.000101, -0.000163, 0.000154, 0.000806, -0.000091, 0.00047, 0.000528, 0.000385, 0.000568, -0.000065, -0.002443, -0.000881, 0.000015, 0.000921, 0.00154, 0.000318, -0.000622, 0.000688, -0.000106, -0.000524, -0.000082, 0.000407, -0.000157, -0.000026, 0.000186, 0.000851, -0.001358, -0.001375, -0.001035, -0.00129, -0.00054, -0.000292, -0.000539, 0.000184, -0.000136, 0.000128, -0.000125, 0.000123, -0.000122, 0.000121, -0.00012, 0.00012, -0.00012];
+		//this.arrayFiller = new Array(256).fill(0);
+		this.windowedChunk = new Array(this.fftSize*2).fill(0);
 
-		for (let i = 0; i < this.fftSize; i ++) {
-		  //this.nftData[i] = (((Math.random()) * 2) - 1) * .4;
-		  //this.nftData[i] = parseFloat(this.nftData[i].toFixed(2));
-		  //console.log(rPhase[i]);
-		}
-
-		//create random phase values (to provide some variation in the signal)
-		this.rPhase = [this.fftSize];
-		for (let i = 0; i < this.fftSize; i ++) {
-		  this.rPhase[i] = (((Math.random()) * 2) - 1) * .4;
-		  this.rPhase[i] = parseFloat(this.rPhase[i].toFixed(2));
-		}
-
-		//create an array to store spectral data, this array contains real and imag so is 2x fftSize
-		this.spectrum = new Float64Array(this.fftSize);
-		//push our magnitude and phase values into the array interleaved
-		this.spectrum = this.nftData.reduce((x, y, z) => (x.splice(z * 2, 0, y), x), this.rPhase.slice());
-		//fill the other half with zeros
 		//this.spectrum = this.spectrum.concat(this.arrayFiller);
-		//worklets' precious buffersize
 		this.bufferSize = 128;
-		this.fftResult = new  Float64Array(this.fftSize) ;
+		this.fftResult = new Float64Array(this.fftSize) ;
 		//window function
 		function hanning (i, N) {
 			return 0.5*(1 - Math.cos(6.283185307179586*i/(N-1)))
@@ -221,15 +205,25 @@ class SpectralSynth extends AudioWorkletProcessor {
 		for (let y = 0; y < this.fftSize; y++) {
 			this.hann[y] = hanning(y,this.fftSize);
 		}
+		this.rPhase = [this.fftSize];
+
 	}
+
 	//this happens every block
   process(inputs, outputs, parameters) {
     // By default, the node has single input and output.
-    const input = inputs[0];
+		const input = inputs[0];
     const output = outputs[0];
     const inputChannel = input[0];
     const outputChannel = output[0];
 		let gain = parameters.gain;
+		//create random phase values (to provide some variation in the signal)
+
+		//create an array to store spectral data, this array contains real and imag so is 2x fftSize
+		this.spectrum = new Float64Array(this.fftSize * 2);
+		//push our magnitude and phase values into the array interleaved
+		//this.spectrum = this.specy.reduce((x, y, z) => (x.splice(z * 2, 0, y), x), this.rPhase.slice());
+
 		//INPUT
 		//write a block of audio into an input-buffer
 		for (let i = 0; i < this.bufferSize; i++) {
@@ -240,9 +234,22 @@ class SpectralSynth extends AudioWorkletProcessor {
 			if (this.hopCounter == this.hopSize) {
 				//reset our Hop Counter
 				this.hopCounter = 0;
+
+				//push our magnitude and phase values into the array interleaved
+				try {
+					for (let r = 0; r < this.fftSize; r++) {
+						this.rPhase[r] = (((Math.random()) * 2) - 1) * .001;
+						this.rPhase[r] = parseFloat(this.rPhase[r].toFixed(2));
+						this.specy[r] *= this.hann[r];
+					}
+					this.spectrum = this.specy.reduce((x, y, z) => (x.splice(z * 2, 0, y), x), this.rPhase.slice());
+					//console.log(this.spectrum);
+				}
+				catch(error) {}
+				//this.spectrum = (this.specy, this.rPhase) => this.specy.reduce((combArr, elem, i) => combArr.concat(elem, this.rPhase[i]), []);
 				//Window the last FFT Size of samples
 				for (let y = 0; y < this.fftSize; y++) {
-					this.windowedChunk[y] = this.inputCircBuffer[(((this.pointers[0] + i) + this.inputCircBuffer.length) - this.fftSize + y) % this.inputCircBuffer.length] * this.hann[y];
+					//this.windowedChunk[y] = this.inputCircBuffer[(((this.pointers[0] + i) + this.inputCircBuffer.length) - this.fftSize + y) % this.inputCircBuffer.length] * this.hann[y];
 				}
 				//compute the fft
 				this.fft.fft(this.windowedChunk, this.fftResult);
@@ -252,10 +259,11 @@ class SpectralSynth extends AudioWorkletProcessor {
 				}
 				//console.log(this.windowedChunk.length);
 				//we'll reuse the windowed chunk array to store the real samples from the inverse fft
-				this.fft.ifft(this.fftResult, this.windowedChunk);
+				this.fft.ifft(this.spectrum, this.windowedChunk);
 				//write (make sure we are ADDIING) our Real sample values into the output Circular Buffer
 				for (let y = 0; y < this.fftSize; y++) {
-					this.outputCircBuffer[(this.pointers[1] + y) % this.outputCircBuffer.length] = this.outputCircBuffer[(this.pointers[1] + y) % this.outputCircBuffer.length] + this.windowedChunk[y];
+
+					this.outputCircBuffer[(this.pointers[1] + y) % this.outputCircBuffer.length] = this.outputCircBuffer[(this.pointers[1] + y) % this.outputCircBuffer.length] + this.windowedChunk[y * 2];
 				}
 				//increment our output circular buffer write pointer 1 hop Size
 				this.pointers[1] =  (this.pointers[1] + this.hopSize) % this.outputCircBuffer.length;

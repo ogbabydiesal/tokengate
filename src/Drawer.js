@@ -1,14 +1,14 @@
 import React, {useState} from "react";
 import Player from './Player';
 
-
 export default function App() {
   const [specFrame, setSpecFrame] = useState(0);
   React.useEffect(() => {
-
     //setup the spectrum and overlay drawing contexts
+      //the spectrum drawing context
     let c = document.getElementById("myCanvas");
     let ctx = c.getContext("2d");
+      //the overlay drawing context
     let d = document.getElementById("myCanvas2");
     let ctx2 = d.getContext("2d");
     //create a spectrum array
@@ -16,7 +16,8 @@ export default function App() {
     let spectrum = new Array(fftSize * 50).fill(0); //6400
     //generate random values for our spectrum
     for (let i = 0; i < spectrum.length; i++) {
-      if (Math.random() < .01) {
+
+      if (Math.random() < .1) {
         spectrum[i] = Math.random().toFixed(3);
       }
     }
@@ -33,13 +34,12 @@ export default function App() {
       ctx.fillStyle = 'rgba(' + (spectrum[x]* 255)+','+ (spectrum[x]* 255)+','+(spectrum[x]* 255) + ')';
       ctx.fillRect((column * outputSizeX)-outputSizeX,row * outputSizeY,outputSizeX, outputSizeX);
     }
-    //
     let xPos = 0;
 
     let start, previousTimeStamp;
     let done = false
 
-    function step(timestamp, specFrame) {
+    function step(timestamp) {
       if (start === undefined) {
         start = timestamp;
         }
@@ -50,9 +50,9 @@ export default function App() {
         ctx2.fillStyle = 'royalblue';
         ctx2.clearRect(0, 0, 500, 384)
         ctx2.fillRect(xPos, 0, 13, 384) //play head
-        let specFrame = spectrum.slice(xPos * 128, 128);
+        //would love to be able to pass in fftSize here
+        let specFrame = spectrum.slice(Math.floor(xPos / 10)* 128, (Math.floor(xPos / 10)* 128) + 128);
         setSpecFrame(specFrame);
-        //console.log(spectrum);
         xPos++;
         if (xPos == 500) xPos = 0;
         if (count === 200) done = true; //probably lose this for a button
@@ -76,7 +76,6 @@ export default function App() {
         width="500"
         height="384"
       >
-        Your browser does not support the HTML canvas tag.
       </canvas>
       <canvas className="canvasOverlay"
         id="myCanvas2"
@@ -86,10 +85,5 @@ export default function App() {
       </canvas>
       <Player specFrame={specFrame}/>
     </div>
-
-
-
-
-
   );
 }
