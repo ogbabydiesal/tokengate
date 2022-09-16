@@ -238,7 +238,7 @@ class SpectralSynth extends AudioWorkletProcessor {
 				//push our magnitude and phase values into the array interleaved
 				try {
 					for (let r = 0; r < this.fftSize; r++) {
-						this.rPhase[r] = (((Math.random()) * 2) - 1) * .001;
+						this.rPhase[r] = (((Math.random()) * 2) - 1) * .003;
 						this.rPhase[r] = parseFloat(this.rPhase[r].toFixed(2));
 						this.specy[r] *= this.hann[r];
 					}

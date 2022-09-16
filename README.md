@@ -1,6 +1,9 @@
 # Sound-chain
 
 ## About
+Sound-Chain (working title) is a collectively composed sound piece using Web3 technology. It uses NFTs as access tokens to write musical data to an on-chain spectrogram. Currently in development (github.com/tmartinez88/sound-chain) the project uses custom audio processing and unique social dynamics to imagine new forms of musical collaboration. 
+
+Sound-Chain uses NFTs. But not in the way a lot of other projects use them. There's no apes or kitties here. NFTs in Sound-Chain are used as access and permissions tokens for a collectively governed sound composition. Non-holders can still access the site and make music with the tool, they just can't write content to the composition on-chain making it a fun and accessible project for everyone.  
 
 Sound Chain is collaborative spectral composition developed using Web3 tech. It uses the NFT standard
 to grant permissions for the composing process. This repo references smart contracts deployed on the Kovan test network. So while testing, be sure to change your Metamask wallet to Kovan from Mainnet.

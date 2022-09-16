@@ -23,7 +23,7 @@ class Player extends React.Component {
   }
 
   updateSpectralEngine(val) {
-    this.state.gainParam.linearRampToValueAtTime(val, this.state.context.currentTime + 0.5);
+    this.state.gainParam.linearRampToValueAtTime(val, this.state.context.currentTime + 0.01);
   }
 
   render() {
