@@ -1,7 +1,7 @@
 # Sound-chain
 
 ## About
-Sound Chain is collaborative spectral composition enabled using Web3 tech. Participants may access parts of the audio spectrum via NFT tokens. Writing data to the spectrum only costs gas. 
+Sound Chain is collaborative spectral composition enabled using Web3 tech. Participants may access parts of the audio spectrum via NFTs. Writing data to the spectrum only costs gas. 
 
 This repo references smart contracts deployed on the Kovan test network. So while testing,change your Metamask wallet to Kovan from Mainnet.
 
