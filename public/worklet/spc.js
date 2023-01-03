@@ -2,7 +2,6 @@
 // Expects interleaved complex pairs (i.e. `[real0, imag0, real1, imag1, ...]`)
 function FFT(size) {
 	if (!(this instanceof FFT)) return new FFT(size);
-
 	var twiddleRealCache = new Float64Array(size);
 	var twiddleImagCache = new Float64Array(size);
 	var stride = 1;
@@ -184,7 +183,7 @@ class SpectralSynth extends AudioWorkletProcessor {
 		//declare circular buffer
 		this.inputCircBuffer = new Array(1024).fill(0);
 		this.outputCircBuffer = new Array(1024).fill(0);
-		this.pointers = [256,0, 0];
+		this.pointers = [256,0,0];
 		//declare fft stuff
 		this.fftSize = 128;
 		this.fft = new FFT(this.fftSize); // Complex FFT

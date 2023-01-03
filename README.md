@@ -3,7 +3,7 @@
 ## About
 Sound Chain is collaborative spectral composition enabled using Web3 tech. Participants may access parts of the audio spectrum via NFTs. Writing data to the spectrum only costs gas. 
 
-This repo references smart contracts deployed on the Kovan test network. So while testing,change your wallet to Kovan from Mainnet.
+This repo references smart contracts deployed on the Kovan test network. So while testing, change your wallet to Kovan from Mainnet.
 
 Each NFT gives the owner access to a particular frequency component in time. If I collect FFNT 10, then I would have write access to the first frame of audio for the sound piece. If I collect FFNFT 128, then I would have write access to the second frame of audio.
 

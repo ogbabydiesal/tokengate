@@ -27,7 +27,7 @@ class Metamask extends Component {
   }
    if (!this.state.selectedAddress) {
      return (
-       <button className="metaConnect" onClick={() => this.connectToMetamask()}>Connect to Chain</button>
+       <button className="metaConnect" onClick={() => this.connectToMetamask()}>Connect Wallet</button>
      )
    } else {
      return (

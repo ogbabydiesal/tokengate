@@ -8,7 +8,7 @@ function App() {
       <header className="App-header">
         {/*<img src={logo} className="App-logo" alt="logo" /> */}
         <p>
-          Spectrum-Writer is a Collaborative Web3 Music Composition tool.
+          3ns3mbl3 is a collaborative Web3 Music Composition tool.
         </p>
         <p>
           Collect Spectral NFTs for access to the

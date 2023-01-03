@@ -16,8 +16,8 @@ export default function App() {
     let spectrum = new Array(fftSize * 50).fill(0); //6400
     //generate random values for our spectrum
     for (let i = 0; i < spectrum.length; i++) {
-
-      if (Math.random() < .1) {
+      //only write things in to the lower audible frequency range
+      if (i % fftSize < 15 && Math.random() < .1) {
         spectrum[i] = Math.random().toFixed(3);
       }
     }
@@ -30,9 +30,11 @@ export default function App() {
       if (x % fftSize == 0) {
         column++;
       }
-      row = x % fftSize;
+      //mirror y axis 
+      row = fftSize - (x % fftSize);
       ctx.fillStyle = 'rgba(' + (spectrum[x]* 255)+','+ (spectrum[x]* 255)+','+(spectrum[x]* 255) + ')';
       ctx.fillRect((column * outputSizeX)-outputSizeX,row * outputSizeY,outputSizeX, outputSizeX);
+      
     }
     let xPos = 0;
 
@@ -70,7 +72,7 @@ export default function App() {
   }, []);
 
   return (
-    <div>
+    <div className="UI">
       <canvas className="canvasSpectrum"
         id="myCanvas"
         width="500"

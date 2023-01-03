@@ -1,66 +1,92 @@
 .App {
   text-align: center;
-  background-color:PaleGoldenRod;
-
+  background-color:black;
+  padding: 25px;
 }
 
 .metaConnect {
   position:absolute;
   right:0px;
   top: 0px;
-  width: 25vw;
   border-radius: 35px;
   margin:35px;
   border-style: solid;
-  border-color:royalblue;
-  color:royalblue;
-  background-color:PaleGoldenRod;
-  font-size: 30px;
+  border-width: 1px;
+  border-color:whitesmoke;
+  color:whitesmoke;
+  background-color:transparent;
+  font-size: calc(3 + 1vh);
   align-items: center;
-  box-shadow: 10px;
 }
-
+.UI {
+  margin:0px;
+  padding:0px;
+}
 .canvasSpectrum {
   position:absolute;
-  right:0px;
-  top: 25vh;
   width: 256px;
   height: 256px;
-  margin:35px;
   border-style: solid;
-  border-color:royalblue;
+  border-color:whitesmoke;
   background-color: Gainsboro;
+  top: 50%;
+  left: 50%;
 }
-
 .canvasOverlay {
   position:absolute;
-  right:0px;
-  top: 25vh;
   width: 256px;
   height: 256px;
-  margin:35px;
   border-style: solid;
-  border-color:royalblue;
+  border-color:black;
+  box-shadow: 8px 8px 1px grey;
+  top: 50%;
+  left: 50%;
 
 }
 
 .audioParams {
-  position:absolute;
-  top: 185px;
-  right: 0px;
-  margin:35px;
-  color:royalblue;
+  margin:25px;
+  color:whitesmoke;
 }
 
 .audioButtonStyle {
   border-style: solid;
-  border-color:royalblue;
-  color:royalblue;
-  background-color:PaleGoldenRod;
-  font-size: 10px;
-  align-items: center;
-  border-radius: 35px;
+  border-color:black;
+  color:black;
+  background-color:transparent;
+  font-size: 25px;
+  border-radius: 25px;
   border-width:1px;
+  cursor: pointer;
+}
+
+.typeinp {
+  -webkit-appearance: none;
+  height: 25px;
+  background: black;
+  outline:1px;
+  outline-color: black;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  border-radius: 25px;
+}
+
+.typeinp::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: whitesmoke;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.typeinp::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: black;
+  cursor: pointer;
+  border-radius: 15px;
 }
 
 .App-logo {
@@ -77,16 +103,16 @@
 .App-header {
   border-right-style: solid;
   border-color:black;
-  min-height: 100vh;
+  min-height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: top;
   font-size: calc(5px + 2vmin);
   width: 35vw;
-  color:royalblue;
+  color:whitesmoke;
   margin-right: 55px;
-  border-color: royalblue;
+  
 }
 
 .App-link {
