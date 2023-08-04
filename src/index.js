@@ -4,7 +4,6 @@ import './index.css';
 import './App.css';
 import App from './App';
 import Metamask from './Metamask';
-import Drawer from './Drawer';
 // ./Player is a child of Drawer
 import reportWebVitals from './reportWebVitals';
 
@@ -13,7 +12,6 @@ root.render(
   <React.StrictMode>
     <App />
     <Metamask />
-    <Drawer />
   </React.StrictMode>
 );
 

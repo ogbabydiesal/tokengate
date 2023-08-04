@@ -1,48 +1,88 @@
-import React, { Component } from 'react';
-import spec_ABI from './spec_abi.json';
+import React, { Component, Fragment } from 'react';
+import NFTContractABI from './nft_abi.json';
 import {ethers} from "ethers";
+import Unlocked from './Unlocked';
+
+function getFirstCharacters(str, x) {
+  return str.substring(0, x);
+}
 
 class Metamask extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
-
+  
   async connectToMetamask() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const nftContractAddress = "0x57a00abb471cF26a6AcC79C78b3B32F89bdf6Edf";
+    const fetchBalance = async (userWalletAddress, provider) => {
+      try {
+        //see if the wallet has the nft using balanceOf function (if your NFT contract implements this function)
+        const balance = await fetchNFTBalance(userWalletAddress, provider);
+        return balance;
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+      }
+    };
+    
+    const fetchNFTBalance = async (address, provider) => {
+      try {
+        // Connect to the NFT contract
+        const contract = new ethers.Contract(nftContractAddress, NFTContractABI, provider);
+        // Call the balanceOf function on the NFT contract
+        const balance = await contract.balanceOf(address);
+        return balance.toString();
+      } catch (error) {
+        console.error("Error fetching NFT balance:", error);
+      }
+    };
+    
     const accounts = await provider.send("eth_requestAccounts", []);
-    const soundPiece = new ethers.Contract('0xbde88a06Be30d4fEE59876d1867F94A4bE6F42D9', spec_ABI, provider);
-    const specValues = await soundPiece.retrieve();
-    this.setState({ selectedAddress: accounts[0], specValues})
+    const data = ({ selectedAddress: accounts[0]})
+    //see if they have ens
+    const address = await provider.lookupAddress(data.selectedAddress);
+    //see if they have the NFT
+    const baly = await fetchBalance(data.selectedAddress, provider);
+    if (address == null) {
+      this.setState({ selectedAddress: accounts[0], baly} ); 
+    } else {
+      this.setState({ selectedAddress: address, baly} ); 
+    }   
   }
-
+ 
   renderMetamask() {
-  try {
-    let v = this.state.specValues;
-    v = ethers.BigNumber.from(v);
-    console.log('the value on chain is ' + v.toNumber());
+    if (!this.state.selectedAddress) {
+      return (
+        <button className="metaConnect" onClick={() => this.connectToMetamask()}>Connect Wallet</button> 
+      )
+    } else {
+      return (
+        <button className="metaConnect">Welcome {(getFirstCharacters(this.state.selectedAddress, 17))+"..."}.</button>  
+      ); 
+    } 
   }
-  catch(error) {
-    //console.log(error);
-  }
-   if (!this.state.selectedAddress) {
-     return (
-       <button className="metaConnect" onClick={() => this.connectToMetamask()}>Connect Wallet</button>
-     )
-   } else {
-     return (
-       <p className="metaConnect">Welcome {this.state.selectedAddress}</p>
-     );
-   }
 
- }
+  splashy() {
+    if (this.state.baly == null) {
+      return (<p>connect your wallet above to get started</p>)
+    } else if (this.state.baly < 1) {
+      return (<p>you don't have the access NFT! Collect one <a target="_blank" href = "https://opensea.io/collection/chain-renderer" rel="noreferrer">here</a> to gain access to the site.</p>)
+    } else if (this.state.baly >= 1) {
+      return ( <Unlocked/>) 
+    }
+  }
+
   render() {
     return(
-      <div>
-      {this.renderMetamask()}
-
-      </div>
-
+      <Fragment>
+        <div className="web3">
+          {this.renderMetamask()}
+        </div>
+        <div className='main'>
+          {this.splashy()}
+        </div>
+      </Fragment>
     )
   }
 }

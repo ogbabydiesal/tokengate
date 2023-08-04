@@ -15,6 +15,7 @@
     "react-native-webview": "^11.23.0",
     "react-script-tag": "^1.1.2",
     "react-scripts": "5.0.1",
+    "tone": "^14.7.77",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
