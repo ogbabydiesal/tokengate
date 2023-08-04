@@ -5,6 +5,8 @@ I wanted to create a straight forward, basic token gated website in React. You w
 
 The web app does ENS resolution, and address shortening. At the moment it renders a React component that plays a synthesizer tone using Tone.js.
 
+The "unlockable content" component is the Unlocked.js file.
+
 The NFT that unlocks my content can be found here: [https://opensea.io/assets/ethereum/0x57a00abb471cf26a6acc79c78b3b32f89bdf6edf/1/](https://opensea.io/assets/ethereum/0x57a00abb471cf26a6acc79c78b3b32f89bdf6edf/1/)
 
 ## Installation
