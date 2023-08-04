@@ -1,21 +1,11 @@
-# Sound-chain
+# Token Gate
 
 ## About
-Sound Chain is collaborative spectral composition enabled using Web3 tech. Participants may access parts of the audio spectrum via NFTs. Writing data to the spectrum only costs gas. 
+I wanted to create a straight forward, basic token gated website in React. You will want to change the "nftContractAddress" variable to match your NFT access token. You will also want to update the nft_abi.json to reflect the abi of your NFT contract. 
 
-This repo references smart contracts deployed on the Kovan test network. So while testing, change your wallet to Kovan from Mainnet.
+The web app does ENS resolution, and address shortening. At the moment it renders a React component that plays a synthesizer tone using Tone.js.
 
-Each NFT gives the owner access to a particular frequency component in time. If I collect FFNT 10, then I would have write access to the first frame of audio for the sound piece. If I collect FFNFT 128, then I would have write access to the second frame of audio.
-
-Frames can be played back (and looped) arbitrarily fast so the piece can be expanded or compressed to explore new timbres.
-
-## The Audio Engine
-
-Spectral processing is achieved in our app using Audioworklets and more generally the Webaudio API. We have chosen an FFT size of 128 with an overlap factor of 2. Should the website go down, the composition remains available on the blockchain. Due to the fairly standardized resynthesis technique we have chosen, the sound piece can be played back in most digital signal processing software with FFT/IFFT functionality such as JUCE or MAX/MSP.
-
-We are using the [signalsmith-js-fft](https://www.npmjs.com/package/signalsmith-js-fft) node package to handle the fft/ifft processing. It is provided here with MIT license.
-
-For more information on the overlap-add fft/ifft synthesis and resynthesis technique see [the bela online tutorials](https://learn.bela.io/tutorials/c-plus-plus-for-real-time-audio-programming/phase-vocoder-part-1/).
+The NFT that unlocks my content can be found here: [https://opensea.io/assets/ethereum/0x57a00abb471cf26a6acc79c78b3b32f89bdf6edf/1/](https://opensea.io/assets/ethereum/0x57a00abb471cf26a6acc79c78b3b32f89bdf6edf/1/)
 
 ## Installation
 In the project directory, you can run:
@@ -30,13 +20,3 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.

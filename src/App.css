@@ -1,14 +1,17 @@
-html, body, p {
+html, body {
   margin:0;
   padding:0;
   background-color:lightgrey;
 }
 
+h1{
+  font-family: 'Courier New', Courier, monospace;
+}
+
 .App {
-  float:right;
-  width:49%;
-  right:0px;
-  background-color: #61dafb;
+  margin:auto;
+  display:block;
+  text-align: center;
 }
 
 .web3 {
@@ -20,13 +23,40 @@ button {
   width: 250px;
   border-radius:35px;
   border-width: 1px;
-  border-color:blueviolet;
-  color:blueviolet;
+  border-color:black;
+  color:black;
   background-color:transparent;
   font-size: calc(3 + 1vh);
   align-items: center;
   padding:8px;
-  box-shadow: blueviolet 5px 5px 5px;
+  box-shadow: white 5px 5px 15px;
+}
+
+button:hover {
+  background-color:white;
+  transition: all .25s ease-in-out;
+}
+
+.generateButton {
+  margin:auto;
+  display:block;
+}
+
+img {
+  margin: auto;
+  display:block;
+  width:50%;
+}
+
+/*styling for unlocked div*/
+.unlocked {
+  margin:auto;
+  display:block;
+  border-style:double;
+  border-radius:15px;
+  border-width:1px;
+  padding-bottom:25px;
+  max-width:1000px;
 }
 
 .main {

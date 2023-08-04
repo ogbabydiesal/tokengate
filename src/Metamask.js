@@ -58,7 +58,7 @@ class Metamask extends Component {
       )
     } else {
       return (
-        <button className="metaConnect">Welcome {(getFirstCharacters(this.state.selectedAddress, 17))+"..."}.</button>  
+        <button className="metaConnect">welcome {(getFirstCharacters(this.state.selectedAddress, 17))+"..."}.</button>  
       ); 
     } 
   }
@@ -67,7 +67,7 @@ class Metamask extends Component {
     if (this.state.baly == null) {
       return (<p>connect your wallet above to get started</p>)
     } else if (this.state.baly < 1) {
-      return (<p>you don't have the access NFT! Collect one <a target="_blank" href = "https://opensea.io/collection/chain-renderer" rel="noreferrer">here</a> to gain access to the site.</p>)
+      return (<p>you don't have the access NFT! Collect one <a target="_blank" href = "https://opensea.io/assets/ethereum/0x57a00abb471cf26a6acc79c78b3b32f89bdf6edf/1/" rel="noreferrer">here</a> to gain access to the site.</p>)
     } else if (this.state.baly >= 1) {
       return ( <Unlocked/>) 
     }

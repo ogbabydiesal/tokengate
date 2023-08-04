@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import * as Tone from 'tone'
 
 function Unlocked() {
@@ -7,9 +8,14 @@ function Unlocked() {
     synth.triggerAttackRelease("C4", "8n");
   }
   return (
-    <button onClick={() => runSound()}>
-      generate song
-    </button>  
+    <Fragment>
+      <div className='unlocked'>
+        <img src={require('./images/chainmaille.gif')} alt="chainmaille" />
+        <button className='generateButton' onClick={() => runSound()}>
+          generate song
+        </button>
+      </div>
+    </Fragment>
   )
 }
 
