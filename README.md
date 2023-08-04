@@ -1,6 +1,9 @@
 # Token Gate
 
 ## About
+
+link to project: [https://simpletokengate.vercel.app/](https://simpletokengate.vercel.app/)
+
 I wanted to create a straight forward, basic token gated website in React. You will want to change the "nftContractAddress" variable to match your NFT access token. You will also want to update the nft_abi.json to reflect the abi of your NFT contract. 
 
 The web app does ENS resolution, and address shortening. At the moment it renders a React component that plays a synthesizer tone using Tone.js.
