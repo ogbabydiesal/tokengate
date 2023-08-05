@@ -3,6 +3,8 @@ import NFTContractABI from './nft_abi.json';
 import {ethers} from "ethers";
 import Unlocked from './Unlocked';
 import { MetaMaskSDK } from '@metamask/sdk';
+import detectEthereumProvider from '@metamask/detect-provider'
+
 
 function getFirstCharacters(str, x) {
   return str.substring(0, x);
@@ -15,7 +17,25 @@ class Metamask extends Component {
   }
   
   async newConnectToMetamask() {
-    const provider = ((window.ethereum != null) ? new ethers.providers.Web3Provider(window.ethereum) : ethers.providers.getDefaultProvider());
+    const provider = await detectEthereumProvider();
+
+    if (provider) {
+      // From now on, this should always be true:
+      // provider === window.ethereum
+      startApp(provider); // initialize your app
+      console.log(provider);
+    } else {
+      console.log('Please install MetaMask!');
+    }
+
+    function startApp(provider) {
+      // If the provider returned by detectEthereumProvider isn't the same as
+      // window.ethereum, something is overwriting it – perhaps another wallet.
+      if (provider !== window.ethereum) {
+        console.error('Do you have multiple wallets installed?');
+      }
+      // Access the decentralized web!
+    }
   }
 
   async connectToMetamask() {
