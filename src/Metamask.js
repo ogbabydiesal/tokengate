@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import NFTContractABI from './nft_abi.json';
 import {ethers} from "ethers";
 import Unlocked from './Unlocked';
+import { MetaMaskSDK } from '@metamask/sdk';
 
 function getFirstCharacters(str, x) {
   return str.substring(0, x);
@@ -13,6 +14,10 @@ class Metamask extends Component {
     this.state = {};
   }
   
+  async newConnectToMetamask() {
+    const provider = ((window.ethereum != null) ? new ethers.providers.Web3Provider(window.ethereum) : ethers.providers.getDefaultProvider());
+  }
+
   async connectToMetamask() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const nftContractAddress = "0x57a00abb471cF26a6AcC79C78b3B32F89bdf6Edf";
@@ -38,23 +43,26 @@ class Metamask extends Component {
       }
     };
     
-    const accounts = await provider.send("eth_requestAccounts", []);
-    const data = ({ selectedAddress: accounts[0]})
+    
+    //const accounts = await provider.send("eth_requestAccounts", []);
+    //const data = ({ selectedAddress: accounts[0]})
     //see if they have ens
-    const address = await provider.lookupAddress(data.selectedAddress);
+    //const address = await provider.lookupAddress(data.selectedAddress);
     //see if they have the NFT
+    /*
     const baly = await fetchBalance(data.selectedAddress, provider);
     if (address == null) {
       this.setState({ selectedAddress: accounts[0], baly} ); 
     } else {
       this.setState({ selectedAddress: address, baly} ); 
-    }   
+    }
+    */   
   }
  
   renderMetamask() {
     if (!this.state.selectedAddress) {
       return (
-        <button className="metaConnect" onClick={() => this.connectToMetamask()}>Connect Wallet</button> 
+        <button className="metaConnect" onClick={() => this.newConnectToMetamask()}>Connect Wallet</button> 
       )
     } else {
       return (
